@@ -71,6 +71,7 @@ public class GolfBallController : MonoBehaviour {
 		directionNormalized.y = 0;
 		
 		this.rigidbody.AddForce(directionNormalized*speed);
+		//this.rigidbody.AddTorque(directionNormalized*speed);
 		Debug.Log(directionNormalized + " speed: " + speed);
 		line.active = false;
 	}
