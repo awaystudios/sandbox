@@ -6,12 +6,14 @@ public class GolfBallController : MonoBehaviour {
 	
 	public Material lineMaterial;
 	public float speedball;
+	public float maxSpeedBall;
+	
 	Vector3 origPos, curMousePos;
 	RaycastHit hit;
 	VectorLine line;
 	Vector3[] linePoints;
-	
 	GameObject startpointBall;
+	
 	
 	// Use this for initialization
 	void Start () {
@@ -22,8 +24,13 @@ public class GolfBallController : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
+		Debug.Log(rigidbody.velocity.y);	
+		Vector3 newVelocity =  rigidbody.velocity;
 		
+		if (newVelocity.y > 5.0f) {  newVelocity.y = 5.0f;}
+		if (newVelocity.y < -5.0f) {  newVelocity.y = -5.0f;}
+		rigidbody.velocity = newVelocity;
 	}
 	
 	void OnMouseDrag() {
@@ -61,10 +68,11 @@ public class GolfBallController : MonoBehaviour {
 		//this.rigidbody.AddForce(new Vector3(0,0,100));//hit.point);
 		
 		float speed = Vector3.Distance(transform.position,hit.point) * speedball;
-		
+		Debug.Log(speed);
+		if (speed > maxSpeedBall) {speed=maxSpeedBall;}
 		
 		Vector3 heading = transform.position - hit.point;
-		Debug.Log(heading);
+		
 		float distance = heading.magnitude;
 		// This is now the normalized direction.
 		var directionNormalized = heading / distance;
