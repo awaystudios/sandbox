@@ -5,6 +5,7 @@ using Vectrosity;
 public class GolfBallController : MonoBehaviour {
 	
 	public Material lineMaterial;
+	public float speedball;
 	Vector3 origPos, curMousePos;
 	RaycastHit hit;
 	VectorLine line;
@@ -59,7 +60,7 @@ public class GolfBallController : MonoBehaviour {
 		print("OnMouseUp");
 		//this.rigidbody.AddForce(new Vector3(0,0,100));//hit.point);
 		
-		float speed = Vector3.Distance(transform.position,hit.point) * 500;
+		float speed = Vector3.Distance(transform.position,hit.point) * speedball;
 		
 		
 		Vector3 heading = transform.position - hit.point;
