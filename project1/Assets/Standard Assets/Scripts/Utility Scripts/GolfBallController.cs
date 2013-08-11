@@ -7,13 +7,16 @@ public class GolfBallController : MonoBehaviour {
 	public Material lineMaterial;
 	public float speedball;
 	public float maxSpeedBall;
+	public float limitVelocityYUp = 5;
 	
 	Vector3 origPos, curMousePos;
 	RaycastHit hit;
 	VectorLine line;
 	Vector3[] linePoints;
 	GameObject startpointBall;
+	Vector3 newVelocity;
 	
+	float counterZ;
 	
 	// Use this for initialization
 	void Start () {
@@ -25,12 +28,38 @@ public class GolfBallController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		Debug.Log(rigidbody.velocity.y);	
-		Vector3 newVelocity =  rigidbody.velocity;
 		
-		if (newVelocity.y > 5.0f) {  newVelocity.y = 5.0f;}
-		if (newVelocity.y < -5.0f) {  newVelocity.y = -5.0f;}
+		// Limit the velocity up to avoid the ball is going to high
+		// Using a temp variable reason:
+		// Cannot modify a value type return value of `UnityEngine.Rigidbody.velocity'. Consider storing the value in a temporary variable
+		newVelocity  =  rigidbody.velocity;
+		if (newVelocity.y > limitVelocityYUp) {  newVelocity.y = limitVelocityYUp;}
+		// option could limit the Ydown, ball down but let's not do this for now
+		//else if (newVelocity.y < -limitVelocityY) {  newVelocity.y = -limitVelocityY;}
+		
+		if (newVelocity.z > 0 && newVelocity.z < 0.1) {  
+			newVelocity.x = 0;
+			newVelocity.y = 0;
+			newVelocity.z = 0;
+			rigidbody.angularVelocity = newVelocity;
+		}
+		/*
+		if (newVelocity.z < 0.4) {  
+			counterZ += 1; }
+		else {
+			counterZ = 0;
+		}
+		if (counterZ > 20) {
+			newVelocity.x = 0;
+			newVelocity.y = 0;
+			newVelocity.z = 0;
+		}
+		*/
+		
 		rigidbody.velocity = newVelocity;
+		
+		Debug.Log("rigidbody.velocity:" + rigidbody.velocity);
+		
 	}
 	
 	void OnMouseDrag() {
@@ -61,6 +90,7 @@ public class GolfBallController : MonoBehaviour {
 	void OnMouseDown() {
 		print("OnMouseDown");
 		line.active = true;
+		counterZ = 0;
 	}
 	
 	void OnMouseUp() {
