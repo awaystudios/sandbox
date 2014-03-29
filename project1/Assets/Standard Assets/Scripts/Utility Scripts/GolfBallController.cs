@@ -8,7 +8,8 @@ public class GolfBallController : MonoBehaviour {
 	public float speedball;
 	public float maxSpeedBall;
 	public float limitVelocityYUp = 5;
-	
+	private bool inContactBaan = true;
+
 	Vector3 origPos, curMousePos;
 	RaycastHit hit;
 	VectorLine line;
@@ -17,6 +18,8 @@ public class GolfBallController : MonoBehaviour {
 	Vector3 newVelocity;
 	
 	float counterZ;
+
+	float counterY;
 	
 	// Use this for initialization
 	void Start () {
@@ -25,7 +28,7 @@ public class GolfBallController : MonoBehaviour {
 		line.active = false;
 		startpointBall = GameObject.FindGameObjectWithTag ("StartPointBall");
 	}
-	
+
 	// Update is called once per frame
 	void FixedUpdate () {
 		
@@ -36,7 +39,7 @@ public class GolfBallController : MonoBehaviour {
 		if (newVelocity.y > limitVelocityYUp) {  newVelocity.y = limitVelocityYUp;}
 		// option could limit the Ydown, ball down but let's not do this for now
 		//else if (newVelocity.y < -limitVelocityY) {  newVelocity.y = -limitVelocityY;}
-		
+
 		if (newVelocity.z > 0 && newVelocity.z < 0.1) {  
 			newVelocity.x = 0;
 			newVelocity.y = 0;
@@ -57,9 +60,24 @@ public class GolfBallController : MonoBehaviour {
 		*/
 		
 		rigidbody.velocity = newVelocity;
-		
-		Debug.Log("rigidbody.velocity:" + rigidbody.velocity);
-		
+
+		//Debug.Log("rigidbody.velocity:" + rigidbody.velocity);
+
+		// adding downforce when the distance from the ball to the course is high
+		if (!inContactBaan) {
+			// calculate distance 
+			//float speed = Vector3.Distance(transform.position,);
+			RaycastHit hit;
+			if (Physics.Raycast(transform.position, -Vector3.up, out hit)) {
+				//float distanceToGround = hit.distance;
+				Debug.Log ("distanceToGround: " + hit.distance);
+				if (hit.distance>.4) {
+					this.rigidbody.AddForce(new Vector3(0,-hit.distance*200,0));
+				}
+			}
+
+		}
+
 	}
 	
 	void OnMouseDrag() {
@@ -114,8 +132,30 @@ public class GolfBallController : MonoBehaviour {
 		line.active = false;
 	}
 
-}
+	void OnCollisionExit(Collision collisionInfo) {
+		print("No longer in contact with " + collisionInfo.transform.name);
+		if (collisionInfo.transform.name == "Baan 01") {
+			inContactBaan = false;
+		}
+	}
 
+	void OnCollisionEnter(Collision collision) {
+		print("Contact with " + collision.transform.name);
+		if (collision.transform.name == "Baan 01") {
+			inContactBaan = true;
+		}
+
+		// debug draw
+		//foreach (ContactPoint contact in collision.contacts) {
+		//	Debug.DrawRay(contact.point, contact.normal, Color.white);
+		//
+		//}
+
+
+	}
+	
+
+}
 
 	/*	
  			//float angle = AngleDir (transform.position,hit.point, new Vector3(0,1,0));
