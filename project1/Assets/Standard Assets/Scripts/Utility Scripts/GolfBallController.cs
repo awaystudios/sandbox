@@ -121,9 +121,9 @@ public class GolfBallController : MonoBehaviour {
 		
 		Vector3 heading = transform.position - hit.point;
 		
-		float distance = heading.magnitude;
+		float magnitude = heading.magnitude;
 		// This is now the normalized direction.
-		var directionNormalized = heading / distance;
+		var directionNormalized = heading / magnitude;
 		directionNormalized.y = 0;
 		
 		this.rigidbody.AddForce(directionNormalized*speed);
